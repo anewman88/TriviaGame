@@ -1,0 +1,242 @@
+<!-- Interval Demo -->
+<!-- Go to the last script tag -->
+
+<!DOCTYPE html>
+
+<html lang="en-us">
+  
+
+  <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Link to the Bootstrap CDN. link syntax from getbootstrap.com -->
+//    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+  
+    <title>Total Trivial Trivia</title>
+
+  </head>
+
+  <body>
+
+    <div class="container", id="GameContainerDIV">
+        <!-- Game Header/Title -->
+        <div id="GameHeaderID" class="text-center">
+          <h2 class="text-center">Quiz Title</h2>  
+          <button id="InstructBTN"><span>Instructions</span></button>
+          <button id="StartBTN"><span>Start</span></button>  
+          <button id="StopBTN"><span>Stop</span></button>  
+               
+        </div> 
+
+        <div id="DispTimerID"></div>
+
+        <div>id="QuestionBoxID</div>
+
+
+    </div>
+    
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <!-- Script -->
+    <script type="text/javascript">
+
+var DebugOn = true;
+var JumpAround = false;
+
+// Use the ready() function to wait for the DOM (document object model) to be loaded
+$(document).ready(function() {
+  if (DebugOn) console.log ("Start of document.ready");
+
+
+//*******************************************************************
+//*  Global Variable Declarations
+//********************************************************************
+   var CorrectCount = 0;  // integer - number of questions answered correctly
+   var WrongCount = 0;    // integer - number of questions answered incorrecttly
+   var MaxQuestionInt = 10;// integer - The max amount of time in secons to answer a question
+   var QuestionTmRemain = 0;// integer - amount of time left the user has to answer a question
+   var QuestionIntId;        // ???  - Interval Id for question timer
+   var MaxAnswerInt = 3; // integer - The max amount of time in seconds to show answer
+   var AnswerTmRemain = 0;  // integer - amount of time left to show the displayed answer
+   var AnswerIntId;         // ??? - Interval Id for the answer timer
+   var CurQuestionIndex = 0; // Integer - current question
+   var OneSecond = 1000;     // Integer - Interval time
+
+//****************************************************************************
+//Function for the Instruction Button
+$("#InstructBTN").on("click", function() {
+  alert("Instructions:\n\nYou will ... \n\nPress the 'Start' button to begin. \n\nGood Luck!");
+});
+
+//****************************************************************************
+//Function for the Stop Button
+$("#StopBTN").on("click", function() {
+  // stop both of the interval timers
+  clearInterval(QuestionIntId);
+  clearInterval(AnswerIntId);
+
+if(DebugOn) console.log ("Stopped the Timers");
+  // Show the first question
+});
+
+//****************************************************************************
+//Function for the Start Button
+$("#StartBTN").on("click", function() {
+  // Disable/Remove the Instruction and Start Buttons
+  $("#InstructBTN").remove();
+  $("#StartBTN").remove();
+
+  // Start the question interval timer 
+  QuestionTmRemain = MaxQuestionInt;
+  clearInterval(QuestionIntId);
+  QuestionIntId = setInterval(DecrQuestionTmr, OneSecond);
+
+  //  Show the number in the #show-number tag.
+  $("#DispTimerID").html("<h2>" + QuestionTmRemain + "</h2>");
+
+if(DebugOn) console.log ("Started the Question Timer");
+  // Show the first question
+});
+
+//***************************************************************
+//Function for decrimenting the question timer
+function DecrQuestionTmr() {
+
+if(DebugOn) console.log ("In DecrQuestionTmr()");
+  //  Decrease the timer by one.
+  QuestionTmRemain--;
+
+  //  Show the number in the #show-number tag.
+  $("#DispTimerID").html("<h2>" + QuestionTmRemain + "</h2>");
+
+  //  Once number hits zero...
+  if (QuestionTmRemain === 0) {
+
+    //  stop/clear the Question Interval
+    clearInterval(QuestionIntId);
+
+  // clear the question displey
+  
+  // show the answer display 
+
+  // start the Answer Interval Timer
+  AnswerTmRemain = MaxAnswerInt;
+  clearInterval(AnswerIntId);
+  AnswerIntId = setInterval(DecrAnswerTmr, OneSecond);
+
+  //  Temp Alert the user that time is up.
+    alert("Question Time Up!");
+
+  }
+} // function DecrQuestionTmr()
+
+
+//***************************************************************
+//Function for decrimenting the answer timer
+function DecrAnswerTmr() {
+if(DebugOn) console.log ("In DecrAnswerTmr()");
+
+  //  Decrease the timer by one.
+  AnswerTmRemain--;
+
+  //  Once number hits zero...
+  if (AnswerTmRemain === 0) {
+
+    //  stop/clear the Answer Interval
+    clearInterval(AnswerIntId);
+
+    //  Temp  Alert the user that time is up.
+    alert("Answer Time Up!");
+
+    // Show the answer 
+
+    // Clear the Answer 
+
+    // Display the next question
+    DisplayNextQuestion();
+
+    // Start the Question Interval Timer
+    QuestionTmRemain = MaxQuestionInt;
+    clearInterval(QuestionIntId);
+    QuestionIntId = setInterval(DecrQuestionTmr, OneSecond);
+
+  }
+} // function DecrQuestionTmr()
+
+function DisplayNextQuestion() {
+
+} // function DisplayNextQuestion()
+
+
+// Initialize the text portion of the display
+
+
+   if (JumpAround) {
+    //  Interval Demonstration
+    //  Set our number counter to 100.
+    var number = 100;
+
+    //  Variable that will hold our interval ID when we execute
+    //  the "run" function
+    var intervalId;
+
+    //  When the stop button gets clicked, run the stop function.
+    $("#stop").on("click", stop);
+
+    //  When the resume button gets clicked, execute the run function.
+    $("#resume").on("click", run);
+
+    //  The run function sets an interval
+    //  that runs the decrement function once a second.
+    //  *****BUG FIX******** 
+    //  Clearing the intervalId prior to setting our new intervalId will not allow multiple instances.
+    function run() {
+      clearInterval(intervalId);
+      intervalId = setInterval(decrement, 1000);
+    }
+
+    //  The decrement function.
+    function decrement() {
+
+      //  Decrease number by one.
+      number--;
+
+      //  Show the number in the #show-number tag.
+      $("#show-number").html("<h2>" + number + "</h2>");
+
+
+      //  Once number hits zero...
+      if (number === 0) {
+
+        //  ...run the stop function.
+        stop();
+
+        //  Alert the user that time is up.
+        alert("Time Up!");
+      }
+    }
+
+    //  The stop function
+    function stop() {
+
+      //  Clears our intervalId
+      //  We just pass the name of the interval
+      //  to the clearInterval function.
+      clearInterval(intervalId);
+    }
+
+    //  Execute the run function.
+    run();
+
+  }  // if (JumpAround)
+  });  // $(document).ready(function())
+
+    </script>
+
+  </body>
+
+</html>
