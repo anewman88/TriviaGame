@@ -11,7 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Link to the Bootstrap CDN. link syntax from getbootstrap.com -->
-//    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
   
     <title>Total Trivial Trivia</title>
@@ -32,7 +32,7 @@
 
         <div id="DispTimerID"></div>
 
-        <div>id="QuestionBoxID</div>
+        <div id="QuestionBoxID"></div>
 
 
     </div>
@@ -50,6 +50,22 @@ var JumpAround = false;
 // Use the ready() function to wait for the DOM (document object model) to be loaded
 $(document).ready(function() {
   if (DebugOn) console.log ("Start of document.ready");
+
+//*******************************************************************
+//*  Object Declarations
+//********************************************************************
+QuestArray = [
+  { QText: "Question 1", AText: ["Answer1.1", "Answer1.2", "Answer1.3", "Answer1.4"], CorrectAnswer: 0 },
+  { QText: "Question T or F 2", AText: ["Answer2.1", "Answer2.2"], CorrectAnswer: 1 },
+  { QText: "Question 3", AText: ["Answer3.1", "Answer3.2", "Answer3.3", "Answer3.4"], CorrectAnswer: 2 },
+  { QText: "Question 4", AText: ["Answer4.1", "Answer4.2", "Answer4.3", "Answer4.4"], CorrectAnswer: 3 },
+  { QText: "Question 5", AText: ["Answer5.1", "Answer5.2", "Answer5.3", "Answer5.4"], CorrectAnswer: 0 },
+  { QText: "Question 6", AText: ["Answer6.1", "Answer6.2", "Answer6.3", "Answer6.4"], CorrectAnswer: 1 },
+  { QText: "Question 7", AText: ["Answer7.1", "Answer7.2", "Answer7.3", "Answer7.4"], CorrectAnswer: 2 },
+  { QText: "Question 8", AText: ["Answer8.1", "Answer8.2", "Answer8.3", "Answer8.4"], CorrectAnswer: 3 },
+  { QText: "Question 9", AText: ["Answer9.1", "Answer9.2", "Answer9.3", "Answer9.4"], CorrectAnswer: 0 },
+  { QText: "Question 10", AText: ["Answer10.1", "Answer10.2", "Answer10.3", "Answer10.4"], CorrectAnswer: 1 }
+] 
 
 
 //*******************************************************************
@@ -171,9 +187,14 @@ function DisplayNextQuestion() {
 
 } // function DisplayNextQuestion()
 
+function ConsoleQuestionArray () {
 
+  for (var i = 0; i<QuestArray.length; i++){
+    console.log (QuestArray[i]);
+  }
+}
 // Initialize the text portion of the display
-
+   ConsoleQuestionArray();
 
    if (JumpAround) {
     //  Interval Demonstration
