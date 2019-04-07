@@ -1,0 +1,97 @@
+#GameContainerDIV {
+   width: 900px; 
+   height: 700px; 
+   background: url("../images/GenIg5.jpg");
+   background-repeat: round;
+   border: 10px ridge #fa0505; 
+   margin: auto;
+}
+
+h2 {
+  color: black;
+}
+
+#GameHeaderID {
+   width: 600px;
+   padding: 2px;
+   margin: auto;
+   margin-top: 10px;
+   margin-bottom: 10px;
+   background-color: #ececce;
+/*   color: #0b7c7c;  */
+   color:  #fa0505;
+   border: 5px outset black; 
+   position: center;
+}
+
+#StopBTN {
+   color: black;
+   background-color:  #f53333;
+   border: 10px outset #f10606; 
+/*   background-color:  #0b7c7c;
+   border: 10px outset #0db1b1; */
+   border-radius: 4px;
+ }
+
+#StartBTN {
+   color: black;
+   background-color: rgb(15, 177, 15);
+   border: 10px outset green; 
+   border-radius: 4px;
+   margin-left: 11%;
+ }
+
+ #InstructBTN {
+   color: black;
+   background-color: rgb(231, 231, 15);
+   border: 10px outset rgb(184, 184, 15); 
+   border-radius: 4px;
+/*   margin-left: 11%;  */
+ }
+
+ #DisplayAreaDIV {
+   background-color: #ececce;
+   text-align: center;
+   margin: auto; 
+   margin-top: 10px;
+   position: center;
+   color: black;
+   border-radius: 4px;
+   border: 5px outset black;   
+ }
+
+ #ScoreAreaDIV {
+   width: 240px;
+   background-color: #ececce;
+   text-align: center;
+   margin: auto; 
+   margin-top: 10px;
+   position: center;
+   color: black;
+   border-radius: 4px;
+   border: 5px outset black; 
+}
+
+#UserMessageID {
+   width: 300px;
+   background-color: #ececce;
+   text-align: center;
+   margin: auto;
+   margin-top: 10px;
+   position: center;
+   color: black;
+   border-radius: 4px;
+   border: 5px outset black; 
+}
+#TimerDIV {
+   width: 300px;
+   background-color: #ececce;
+   text-align: center;
+   margin: auto;
+   margin-top: 10px;
+   position: center;
+   color: black;
+   border-radius: 4px;
+   border: 5px outset black; 
+}
+

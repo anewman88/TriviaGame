@@ -1,6 +1,5 @@
 var DebugOn = true;
 
-
    //*******************************************************************
    //*  Global Variable Declarations
    //********************************************************************
@@ -44,35 +43,38 @@ var DebugOn = true;
 //Function for displaying the input question
 function DisplayQuestion(CurQuesNum) {
 
-// Clear the Question and Answer Sections
-$("#QuestionID", "#AnswerID", "#UserMessageID").empty();
+   // Clear the Question and Answer Sections and turn on the Display area DIV
+   $("#DisplayAreaDIV").show();
 
-// Display the question
-CurQuestion = QuestArray[CurQuesNum];
-$("#QuestionID").text("Q"+(CurQuesNum+1)+": " + CurQuestion.QText);
+   // Display the question
+   CurQuestion = QuestArray[CurQuesNum];
+   $("#QuestionID").text("Q"+(CurQuesNum+1)+": " + CurQuestion.QText);
 
-// Dynamically display the Answers
-// Create a pointer to the Answer Div
-var NewAnswerDiv = $("#AnswerID");
+   // Dynamically display the Answers
+   // Create a pointer to the Answer Div
+   var NewAnswerDiv = $("#AnswerID");
 
-for (var i = 0; i < CurQuestion.AText.length; i++) {
- 
-  var NewAnswer = $("<div>").text(CurQuestion.AText[i]);
-  NewAnswer.attr("class", "AnswClass");
-  NewAnswer.attr("isansw", i);
-  NewAnswer.attr("id", "AnswID"+i);
+   // Append each answer line
+   for (var i = 0; i < CurQuestion.AText.length; i++) {
+   
+      var NewAnswer = $("<div>").text(CurQuestion.AText[i]);
+      NewAnswer.attr("class", "AnswClass");
+      NewAnswer.attr("isansw", i);
+      NewAnswer.attr("id", "AnswID"+i);
 
-  // if this is the correct answer then send true to MyClickFunction() 
-  if (i === CurQuestion.CorrectAnswer) {
-    NewAnswer.attr("onclick", "MyClickFunction("+true+")");
-  }
-  else {
-    NewAnswer.attr("onclick", "MyClickFunction("+false+")");
-  }
-  NewAnswerDiv.append(NewAnswer);
-  console.log ("Answer: " + CurQuestion.AText[i]);
-}
-$("#UserMessageID").text("Click on the best answer");
+      // if this is the correct answer then send true to AnswerClickFunction() 
+      if (i === CurQuestion.CorrectAnswer) {
+         NewAnswer.attr("onclick", "AnswerClickFunction("+true+")");
+      }
+      else {  // if not the correct answer send false to AnswerClickFunction()
+         NewAnswer.attr("onclick", "AnswerClickFunction("+false+")");
+      }
+      NewAnswerDiv.append(NewAnswer);
+      if (DebugOn) console.log ("Answer: " + CurQuestion.AText[i]);
+   }
+
+   $("#UserMessageID").show();
+   $("#UserMessageID").text("Click on your answer");
 
 } // function DisplayQuestion()
 
@@ -80,59 +82,66 @@ $("#UserMessageID").text("Click on the best answer");
 //  Function to display the final results
 function DisplayResults () {
 
+  /* Turn off unused display areas */
+  $("#DisplayAreaDIV").hide();
+  $("#TimerDIV").hide();
+
+  // Show the quiz results
+  $("#ScoreAreaDIV").show();
   $("#CorrectID").text("Correct: " + CorrectCount);
   $("#WrongID").text("Wrong: " + WrongCount);
   $("#UnAnswID").text("Unanswered: " + UnAnswCount);
 
-  $("#QuestionID").empty();
-  $("#AnswerID").empty();
-  $("#UserMessageID").text("Press the Start button to play again");
-
-  $("#QuestionID").hide();
-  $("#AnswerID").hide();
+  // Instruct the user
+  $("#UserMessageID").text("Press the Start button to take the quiz again");
  
   // Enable the Instruction and Start Buttons
   $("#InstructBTN").show();
   $("#StartBTN").show();
+  $("#StopBTN").hide();
 
-} // Display Results 
+} // function DisplayResults()   
 
 //***************************************************************
 //Function for decrimenting the question timer
 function DecrQuestionTmr() {
 
-if(DebugOn) console.log ("In DecrQuestionTmr()");
+  if(DebugOn) console.log ("In DecrQuestionTmr()");
+
   //  Decrease the timer by one.
   QuestionTmRemain--;
 
   //  Show the time remaining on screen.
-  $("#DispTimerID").html("<h2>" + "Time Remaining: " + QuestionTmRemain + "</h2>");
+  $("#DispTimerID").text(QuestionTmRemain + " Seconds");
 
-  //  Once number hits zero...
+  //  If the question time is up...
   if (QuestionTmRemain === 0) {
 
     //  stop/clear the Question Interval
     clearInterval(QuestionIntId);
 
+    // Increment the un-answered count
     UnAnswCount++;
 
     // Display to user that time is up
     $("#UserMessageID").text("Time's Up!!");
 
-   // Display the correct answer 
-   for (var i = 0; i < CurQuestion.AText.length; i++) {
+    // Display only the correct answer 
+    for (var i = 0; i < CurQuestion.AText.length; i++) {
       // if this is not the correct answer then clear that answer 
-      if (i != CurQuestion.CorrectAnswer) {
-      $("#AnswID"+i).hide();
+      if (i !== CurQuestion.CorrectAnswer) {
+        $("#AnswID"+i).hide();
       }
-   }
+    }
 
     // start the Answer Interval Timer
+    $("#TimerDIV").hide();
     AnswerTmRemain = MaxAnswerInt;
     clearInterval(AnswerIntId);
     AnswerIntId = setInterval(DecrAnswerTmr, OneSecond);
 
-  }
+  }  // if (QuestionTmRemain)
+
 } // function DecrQuestionTmr()
 
 //***************************************************************
@@ -143,7 +152,7 @@ if(DebugOn) console.log ("In DecrAnswerTmr()");
   //  Decrease the timer by one.
   AnswerTmRemain--;
 
-  //  Once number hits zero...
+  //  Once the display answer timer is zero...
   if (AnswerTmRemain === 0) {
 
     //  stop/clear the Answer Interval
@@ -152,41 +161,40 @@ if(DebugOn) console.log ("In DecrAnswerTmr()");
     // Clear the Answer screen
     $("#AnswerID").empty();
 
-    // Display the next question
+    // Display the next question as long as there is another question
     CurQuestionIndex++;
     if (CurQuestionIndex < QuestArray.length) {
       DisplayQuestion(CurQuestionIndex);
 
       // Start the Question Interval Timer
       QuestionTmRemain = MaxQuestionInt;
-      $("#DispTimerID").html("<h2>" + "Time Remaining: " + QuestionTmRemain + "</h2>");
-      
+      $("#TimerDIV").show();
+      $("#DispTimerID").text(QuestionTmRemain + " Seconds");
       clearInterval(QuestionIntId);
       QuestionIntId = setInterval(DecrQuestionTmr, OneSecond);
-
     }
     else {  // All the questions have been asked. 
       // Stop all the timers 
       clearInterval(QuestionIntId);
       clearInterval(AnswerIntId);
-      $("#StopBTN").hide();
 
       // Display the final results page
       DisplayResults();
     }
   
-  }
+  }  // if (AnswerTmRemain === 0)
 } // function DecrQuestionTmr()
 
 //***************************************************************
 //Function for managing the click of an answer
-function MyClickFunction(IsCorrect) {
+function AnswerClickFunction(IsCorrect) {
    
-   if (DebugOn) console.log ("in MyClickFunction() Answer Pressed: " + IsCorrect );
+  if (DebugOn) console.log ("in AnswerClickFunction() Answer Pressed: " + IsCorrect );
 
   // Stop the Question interval timer
   clearInterval(QuestionIntId);
-   
+  
+  
   //  Check if the user clicked the correct answer. The value is passed into
   //  the function depending on which question they clicked
   if (IsCorrect) {
@@ -198,10 +206,10 @@ function MyClickFunction(IsCorrect) {
     $("#UserMessageID").text("Wrong!!");
   }
   
-  // Display the correct answer 
+  // Display only the correct answer 
   for (var i = 0; i < CurQuestion.AText.length; i++) {
     // if this is not the correct answer then clear that answer 
-    if (i != CurQuestion.CorrectAnswer) {
+    if (i !== CurQuestion.CorrectAnswer) {
       $("#AnswID"+i).hide();
     }
   }
@@ -209,9 +217,10 @@ function MyClickFunction(IsCorrect) {
   // start the Answer Interval Timer
   AnswerTmRemain = MaxAnswerInt;
   clearInterval(AnswerIntId);
+  $("#TimerDIV").hide();
   AnswerIntId = setInterval(DecrAnswerTmr, OneSecond);
 
- } // MyClickFunction()
+ } // AnswerClickFunction()
 
 
 //*******************************************************************
@@ -224,24 +233,23 @@ $(document).ready(function() {
 //Function for the Instruction Button
 $("#InstructBTN").on("click", function() {
   alert("Instructions:\n\nThis trivia quiz comes from The Book of General Ignorance by John Lloyd & John Mitchinson. Once each question is posted, you will have a limited amount of time to click on your answer. \n\nPress the 'Start' button to begin. \n\nGood Luck!");
-});
+}); // function InstructBTN click
 
 //****************************************************************************
 //Function for the Stop Button
 $("#StopBTN").on("click", function() {
+
   // stop both of the interval timers
   clearInterval(QuestionIntId);
   clearInterval(AnswerIntId);
 
   $("#StopBTN").hide();
-  $("#StartBTN").show();
-  $("#InstructBTN").show();
 
   DisplayResults();
 
-if(DebugOn) console.log ("Stopped the Timers");
+  if(DebugOn) console.log ("Stopped the Timers");
   
-});
+});  // function StopBTN click
 
 //****************************************************************************
 //Function for the Start Button
@@ -257,26 +265,29 @@ $("#StartBTN").on("click", function() {
   CurQuestionIndex = 0; // Integer - index of current question in question array
   CurQuestion = 0;   // Integer - Current Question index or pointer to object?????
 
-
-  // Hide the Instruction and Start Buttons
+  // Hide the Instruction and Start Buttons and show the stop button
   $("#InstructBTN").hide();
   $("#StartBTN").hide();
   $("#StopBTN").show();
 
+  // Clear the score display
+  $("#ScoreAreaDIV").hide();
+
+  // clear and reset the Question and Answer fields
+  $("#QuestionID").empty();
+  $("#AnswerID").empty();
   $("#QuestionID").show();
   $("#AnswerID").show();
+
+  // Turn on the User Message display
   $("#UserMessageID").show();
   
-  // Clear the display
-  $("#CorrectID").empty();
-  $("#WrongID").empty();
-  $("#UnAnswID").empty();
-
   // Start the question interval timer 
   QuestionTmRemain = MaxQuestionInt;
-  $("#DispTimerID").html("<h2>" + "Time Remaining: " + QuestionTmRemain + "</h2>");
+  $("#DispTimerID").text(QuestionTmRemain + " Seconds");
 
   clearInterval(QuestionIntId);
+  $("#TimerDIV").show();
   QuestionIntId = setInterval(DecrQuestionTmr, OneSecond);
 
   if(DebugOn) console.log ("Started the Question Timer");
@@ -284,11 +295,11 @@ $("#StartBTN").on("click", function() {
   // Show the first question
   CurQuestion = 0;
   DisplayQuestion(CurQuestion);
+
 });  // function StartBTN click
 
-
 //*********************************************************************************
-//  Debug function
+//  Debug function to display the question array
 function ConsoleQuestionArray () {
 
   for (var i = 0; i<QuestArray.length; i++){
@@ -296,11 +307,17 @@ function ConsoleQuestionArray () {
   }
 }
 
+//*********************************************************************************
 // Initialize the text portion of the display
-   if (DebugOn) ConsoleQuestionArray();
+
+$("#TimerDIV").hide();
+$("#ScoreAreaDIV").hide();
+$("#DisplayAreaDIV").hide();
+$("#UserMessageID").hide();
 
 // Hide the stop button to begin 
-   $("#StopBTN").hide();
+$("#StopBTN").hide();
 
+if (DebugOn) ConsoleQuestionArray();
 //*********************************************************************************
 });  // $(document).ready(function())
